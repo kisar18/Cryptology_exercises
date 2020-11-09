@@ -126,6 +126,13 @@ class Key:
         self.repairedKey = self.RepairInput(self.key)
         self.priorities = [None] * len(self.repairedKey)
 
+        priority = 1
+        for i in range(len(myCipher.alphabet)):
+            for j in range(len(self.repairedKey)):
+                if myCipher.alphabet[i] == self.repairedKey[j]:
+                    self.priorities[j] = priority
+                    priority += 1
+
     def RepairInput(self, txtInput):
 
         removable = str.maketrans('', '', '`~!@#$%^&*()_-+={["'']}|\:;<,>.?/')
@@ -182,7 +189,7 @@ myCipher = Cipher("ADFGX","ENG", "Ahoj Pepo šejdeme se v 5 u mostů?")
 myKey = Key("klicik")
 #myCipher.otherAttribs()
 #myCipher.fillTable()
-myKey.otherAttribs()
+#myKey.otherAttribs()
 
 class MyApp(QMainWindow, Ui_MainWindow):
 
@@ -210,6 +217,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
 
         myCipher.otherAttribs()
         myCipher.fillTable()
+        myKey.otherAttribs()
         
         OT = []
         ST = []
@@ -251,38 +259,29 @@ class MyApp(QMainWindow, Ui_MainWindow):
         
         for i in range(len(beforeTransposition)):
             j = 0
-            while j != len(myKey.repairedKey) and STcounter != len(ST):
-                if len(ST[STcounter]) == 1:
-                    beforeTransposition[i].append(ST[STcounter])
-                    STcounter += 1
+            while j != len(myKey.repairedKey):
+                try:
+                    if len(ST[STcounter]) == 1:
+                        beforeTransposition[i].append(ST[STcounter])
+                        STcounter += 1
+                        j += 1
+                    else:
+                        STcounter += 1
+                except:
+                    beforeTransposition[i].append(None)
                     j += 1
-                else:
-                    STcounter += 1
-
-        for i in range(len(myCipher.alphabet)):
-            for j in range(len(myKey.repairedKey)):
-                if myCipher.alphabet[i] == myKey.repairedKey[j]:
-                    myKey.priorities[j] = priority
-                    priority += 1
-
-        priority = 1
 
         for i in range(len(myKey.repairedKey)):
             for j in range(len(myKey.repairedKey)):
                 if priority == myKey.priorities[j]:
                     for k in range(len(beforeTransposition)):
-                        try:
-                            afterTransposition[k].append(beforeTransposition[k][j])
-                        except:
-                            continue
+                        afterTransposition[k].append(beforeTransposition[k][j])
             priority += 1
 
-        for i in range(len(myKey.key)):
+        for i in range(len(myKey.repairedKey)):
             for j in range(len(afterTransposition)):
-                try:
+                if afterTransposition[j][i] != None:
                     afterTransposition_OneList.append(afterTransposition[j][i])
-                except:
-                    continue
 
         for i in range(len(ST)):
             if len(ST[i]) == 1:
@@ -306,6 +305,119 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.encryptResult.setText(printout)
         return(ST)
 
+    def CopyEncryptResult(self):
+        self.decipherInput.setText(self.encryptResult.text())
+
+    def Decipher(self):
+
+        ST = self.Encrypt()
+        OT = []
+        afterTransposition = []
+        beforeTransposition = []
+        beforeTransposition_OneList = []
+        STcounter = 0
+        elements = 0
+        priority = 1
+        badchars = 0
+        deletedPrios = []
+
+        for i in range(len(ST)):
+            if len(ST[i]) == 1:
+                elements += 1
+
+        nones = 0
+        while (elements + nones) % len(myKey.repairedKey) != 0:
+            nones += 1
+        rows = (elements + nones) / len(myKey.repairedKey)
+
+        for i in range(nones):
+            deletedPrios.insert(0, myKey.priorities[-1])
+            myKey.priorities.remove(myKey.priorities[-1])
+
+        for i in range(int(rows)):
+            beforeTransposition.append([])
+            afterTransposition.append([])
+        
+        for i in range(len(myKey.repairedKey)):
+            j = 0
+            while j != rows:
+                if len(ST[STcounter]) == 1:
+                    if j != 8:
+                        afterTransposition[j].append(ST[STcounter])
+                        STcounter += 1
+                        j += 1
+                    elif j == 8 and (i + 1) not in myKey.priorities:
+                        afterTransposition[j].append(None)
+                        j += 1
+                    else:
+                        afterTransposition[j].append(ST[STcounter])
+                        STcounter += 1
+                        j += 1
+                else:
+                    STcounter += 1
+
+        for i in range(nones):
+            myKey.priorities.append(deletedPrios[i])
+
+        for i in range(len(myKey.priorities)):
+            priority = myKey.priorities[i]
+            for k in range(len(afterTransposition)):
+                beforeTransposition[k].append(afterTransposition[k][priority - 1])
+
+        for i in range(len(beforeTransposition)):
+            for j in range(len(myKey.repairedKey)):
+                if beforeTransposition[i][j] != None:
+                    beforeTransposition_OneList.append(beforeTransposition[i][j])
+
+        for i in range(len(ST)):
+            if len(ST[i]) == 1:
+                ST[i] = beforeTransposition_OneList[i - badchars]
+            else:
+                badchars += 1
+
+        badchars = 0
+
+        for i in range(len(ST)):
+            if len(ST[i]) == 1:
+                if (i - badchars) % 2 == 0:
+                    row = ST[i]
+                    column = ST[i + 1]
+
+                    for j in range(len(myCipher.table)):
+                        for k in range(myCipher.size):
+                            rowInTable = myCipher.positios[j]
+                            columnInTable = myCipher.positios[k]
+                            if row == rowInTable and column == columnInTable:
+                                OT.append(myCipher.table[j][k])
+                                break
+                else:
+                    continue
+            else:
+                if ST[i] == "XMEZERAX":
+                    OT.append(" ")
+                else:
+                    for j in range(10):
+                        if ST[i][0] == myCipher.alphabet[j]:
+                            OT.append(str(j))
+                badchars += 1
+
+        OT_string = ""
+        c = 1
+        for i in range(len(OT)):
+            if c % 45 == 0 and c != 1:
+                OT_string += "\n"
+                OT_string += OT[i]
+            else:
+                OT_string += OT[i]
+            c += 1
+
+        if len(ST) == 0:
+            self.decipherResult.setText("Nothing to decipher")
+        else:
+            self.decipherResult.setText(OT_string)
+        return(OT)
+
+
     def __init__(self):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
@@ -315,6 +427,8 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.ENG.triggered.connect(lambda: self.appLanguage("english"))
         self.CZE.triggered.connect(lambda: self.appLanguage("czech"))
         self.encrypt_btn.clicked.connect(self.Encrypt)
+        self.copy_btn.clicked.connect(self.CopyEncryptResult)
+        self.decipher_btn.clicked.connect(self.Decipher)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

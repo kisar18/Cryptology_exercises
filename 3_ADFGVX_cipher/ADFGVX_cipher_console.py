@@ -246,7 +246,7 @@ def Encrypt():
                     afterTransposition[k].append(beforeTransposition[k][j])
         priority += 1
 
-    for i in range(len(myKey.key)):
+    for i in range(len(myKey.repairedKey)):
         for j in range(len(afterTransposition)):
             if afterTransposition[j][i] != None:
                 afterTransposition_OneList.append(afterTransposition[j][i])
@@ -331,7 +331,7 @@ def Decipher():
             beforeTransposition[k].append(afterTransposition[k][priority - 1])
 
     for i in range(len(beforeTransposition)):
-        for j in range(len(myKey.key)):
+        for j in range(len(myKey.repairedKey)):
             if beforeTransposition[i][j] != None:
                 beforeTransposition_OneList.append(beforeTransposition[i][j])
 
