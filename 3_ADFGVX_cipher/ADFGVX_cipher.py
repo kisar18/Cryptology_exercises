@@ -126,6 +126,13 @@ class Key:
         self.repairedKey = self.RepairInput(self.key)
         self.priorities = [None] * len(self.repairedKey)
 
+        priority = 1
+        for i in range(len(myCipher.alphabet)):
+            for j in range(len(self.repairedKey)):
+                if myCipher.alphabet[i] == self.repairedKey[j]:
+                    self.priorities[j] = priority
+                    priority += 1
+
     def RepairInput(self, txtInput):
 
         removable = str.maketrans('', '', '`~!@#$%^&*()_-+={["'']}|\:;<,>.?/')
@@ -182,7 +189,7 @@ myCipher = Cipher("ADFGX","ENG", "Ahoj Pepo šejdeme se v 5 u mostů?")
 myKey = Key("klicik")
 #myCipher.otherAttribs()
 #myCipher.fillTable()
-myKey.otherAttribs()
+#myKey.otherAttribs()
 
 class MyApp(QMainWindow, Ui_MainWindow):
 
@@ -209,6 +216,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
     def Encrypt(self):
 
         myCipher.otherAttribs()
+        myKey.otherAttribs()
         myCipher.fillTable()
         
         OT = []
@@ -251,38 +259,29 @@ class MyApp(QMainWindow, Ui_MainWindow):
         
         for i in range(len(beforeTransposition)):
             j = 0
-            while j != len(myKey.repairedKey) and STcounter != len(ST):
-                if len(ST[STcounter]) == 1:
-                    beforeTransposition[i].append(ST[STcounter])
-                    STcounter += 1
+            while j != len(myKey.repairedKey):
+                try:
+                    if len(ST[STcounter]) == 1:
+                        beforeTransposition[i].append(ST[STcounter])
+                        STcounter += 1
+                        j += 1
+                    else:
+                        STcounter += 1
+                except:
+                    beforeTransposition[i].append(None)
                     j += 1
-                else:
-                    STcounter += 1
-
-        for i in range(len(myCipher.alphabet)):
-            for j in range(len(myKey.repairedKey)):
-                if myCipher.alphabet[i] == myKey.repairedKey[j]:
-                    myKey.priorities[j] = priority
-                    priority += 1
-
-        priority = 1
 
         for i in range(len(myKey.repairedKey)):
             for j in range(len(myKey.repairedKey)):
                 if priority == myKey.priorities[j]:
                     for k in range(len(beforeTransposition)):
-                        try:
-                            afterTransposition[k].append(beforeTransposition[k][j])
-                        except:
-                            continue
+                        afterTransposition[k].append(beforeTransposition[k][j])
             priority += 1
 
         for i in range(len(myKey.key)):
             for j in range(len(afterTransposition)):
-                try:
+                if afterTransposition[j][i] != None:
                     afterTransposition_OneList.append(afterTransposition[j][i])
-                except:
-                    continue
 
         for i in range(len(ST)):
             if len(ST[i]) == 1:
