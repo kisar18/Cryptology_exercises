@@ -114,7 +114,7 @@
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>640</y>
+      <y>690</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -127,7 +127,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>640</y>
+      <y>690</y>
       <width>611</width>
       <height>111</height>
      </rect>
@@ -136,7 +136,7 @@
      <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
     </property>
    </widget>
    <widget class="QLabel" name="language_label">
@@ -175,7 +175,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>600</y>
+      <y>650</y>
       <width>131</width>
       <height>23</height>
      </rect>
@@ -219,8 +219,8 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>796</x>
-      <y>180</y>
+      <x>800</x>
+      <y>220</y>
       <width>71</width>
       <height>20</height>
      </rect>
@@ -236,7 +236,7 @@
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>520</y>
+      <y>570</y>
       <width>82</width>
       <height>17</height>
      </rect>
@@ -249,13 +249,39 @@
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>550</y>
+      <y>600</y>
       <width>82</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
      <string>Decipher</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>480</y>
+      <width>181</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remaining characters to put in table:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="remaining">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>480</y>
+      <width>751</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
