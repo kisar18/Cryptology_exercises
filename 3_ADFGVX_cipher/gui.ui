@@ -39,20 +39,20 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>310</x>
       <y>140</y>
-      <width>181</width>
+      <width>111</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Text for encryption / decription:</string>
+     <string>Text for encryption:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>310</x>
       <y>180</y>
       <width>91</width>
       <height>16</height>
@@ -65,7 +65,7 @@
    <widget class="QLineEdit" name="messageInput">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>520</x>
       <y>140</y>
       <width>113</width>
       <height>20</height>
@@ -75,7 +75,7 @@
    <widget class="QLineEdit" name="keyInput">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>520</x>
       <y>180</y>
       <width>113</width>
       <height>20</height>
@@ -115,21 +115,21 @@
      <rect>
       <x>120</x>
       <y>690</y>
-      <width>171</width>
+      <width>121</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Encrypted / deciphered message:</string>
+     <string>Encrypted message:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="cipherResult">
+   <widget class="QLabel" name="encResult">
     <property name="geometry">
      <rect>
       <x>310</x>
       <y>690</y>
       <width>611</width>
-      <height>111</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -285,6 +285,35 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>760</y>
+      <width>121</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Deciphered message:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="decResult">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>760</y>
+      <width>611</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
     </property>
    </widget>
   </widget>
