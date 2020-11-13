@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>997</width>
     <height>899</height>
    </rect>
   </property>
@@ -17,8 +17,8 @@
    <widget class="QLabel" name="title">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>10</y>
+      <x>390</x>
+      <y>0</y>
       <width>201</width>
       <height>51</height>
      </rect>
@@ -39,10 +39,10 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>120</y>
-      <width>131</width>
-      <height>16</height>
+      <x>310</x>
+      <y>140</y>
+      <width>111</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -52,8 +52,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>160</y>
+      <x>310</x>
+      <y>180</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -65,8 +65,8 @@
    <widget class="QLineEdit" name="messageInput">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>120</y>
+      <x>520</x>
+      <y>140</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -75,8 +75,8 @@
    <widget class="QLineEdit" name="keyInput">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>160</y>
+      <x>520</x>
+      <y>180</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -85,8 +85,8 @@
    <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>210</y>
+      <x>20</x>
+      <y>240</y>
       <width>621</width>
       <height>211</height>
      </rect>
@@ -113,9 +113,9 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>490</y>
-      <width>111</width>
+      <x>240</x>
+      <y>710</y>
+      <width>121</width>
       <height>21</height>
      </rect>
     </property>
@@ -123,27 +123,27 @@
      <string>Encrypted message:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="encryptResult">
+   <widget class="QLabel" name="encResult">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>490</y>
-      <width>491</width>
-      <height>51</height>
+      <x>430</x>
+      <y>710</y>
+      <width>461</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
     </property>
    </widget>
    <widget class="QLabel" name="language_label">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>90</y>
+      <x>410</x>
+      <y>70</y>
       <width>151</width>
       <height>16</height>
      </rect>
@@ -158,8 +158,8 @@
    <widget class="QLabel" name="type_label">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>60</y>
+      <x>410</x>
+      <y>50</y>
       <width>161</width>
       <height>16</height>
      </rect>
@@ -171,61 +171,128 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="encrypt_btn">
+   <widget class="QPushButton" name="enc_dec_btn">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>450</y>
-      <width>75</width>
+      <x>440</x>
+      <y>650</y>
+      <width>131</width>
       <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Encrypt / Decipher</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="warnings">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>250</y>
+      <width>331</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="fillingTable_label">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>90</y>
+      <width>241</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Filling table: Default (Randomly generated)</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>220</y>
+      <width>71</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Warnings:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rb_encrypt">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>570</y>
+      <width>82</width>
+      <height>17</height>
      </rect>
     </property>
     <property name="text">
      <string>Encrypt</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="copy_btn">
+   <widget class="QRadioButton" name="rb_decipher">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>560</y>
-      <width>75</width>
-      <height>23</height>
+      <x>470</x>
+      <y>600</y>
+      <width>82</width>
+      <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Copy result</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>620</y>
-      <width>131</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Text for decription:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="decipherInput">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>620</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
+     <string>Decipher</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>730</y>
-      <width>111</width>
+      <x>30</x>
+      <y>480</y>
+      <width>181</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remaining characters to put in table:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="remaining">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>480</y>
+      <width>751</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>780</y>
+      <width>121</width>
       <height>21</height>
      </rect>
     </property>
@@ -233,33 +300,20 @@
      <string>Deciphered message:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="decipher_btn">
+   <widget class="QLabel" name="decResult">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>680</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Decipher</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="decipherResult">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>730</y>
-      <width>491</width>
-      <height>51</height>
+      <x>430</x>
+      <y>780</y>
+      <width>461</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
     </property>
    </widget>
   </widget>
@@ -268,7 +322,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>997</width>
      <height>21</height>
     </rect>
    </property>
@@ -286,8 +340,16 @@
     <addaction name="ENG"/>
     <addaction name="CZE"/>
    </widget>
+   <widget class="QMenu" name="menuFilling_table">
+    <property name="title">
+     <string>Filling table</string>
+    </property>
+    <addaction name="generate"/>
+    <addaction name="user"/>
+   </widget>
    <addaction name="menuLanguage"/>
    <addaction name="menuLanguage_2"/>
+   <addaction name="menuFilling_table"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="ADFGX">
@@ -308,6 +370,16 @@
   <action name="CZE">
    <property name="text">
     <string>Czech</string>
+   </property>
+  </action>
+  <action name="generate">
+   <property name="text">
+    <string>Randomly generate</string>
+   </property>
+  </action>
+  <action name="user">
+   <property name="text">
+    <string>By user</string>
    </property>
   </action>
  </widget>
