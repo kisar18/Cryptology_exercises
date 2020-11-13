@@ -45,24 +45,51 @@ class Cipher:
             for i in range(10):
                 self.alphabet.append(str(i))
 
-    def fillTable(self):
-        for i in range(self.size):
-            j = 0
-            while j != self.size:
-                positionInAlp = random.randint(0, math.pow(self.size, 2) - 1)
-                if self.size == 5:
-                    if len(self.alphabet[positionInAlp]) == 1 and self.alphabet[positionInAlp] not in self.table[0] and \
-                    self.alphabet[positionInAlp] not in self.table[1] and self.alphabet[positionInAlp] not in self.table[2] and \
-                    self.alphabet[positionInAlp] not in self.table[3] and self.alphabet[positionInAlp] not in self.table[4]:
-                        self.table[i][j] = self.alphabet[positionInAlp]
-                        j += 1
-                else:
-                    if len(self.alphabet[positionInAlp]) == 1 and self.alphabet[positionInAlp] not in self.table[0] and \
-                    self.alphabet[positionInAlp] not in self.table[1] and self.alphabet[positionInAlp] not in self.table[2] and \
-                    self.alphabet[positionInAlp] not in self.table[3] and self.alphabet[positionInAlp] not in self.table[4] and \
-                    self.alphabet[positionInAlp] not in self.table[5]:
-                        self.table[i][j] = self.alphabet[positionInAlp]
-                        j += 1
+    def fillTable(self, method):
+        if method == "generate":
+            for i in range(self.size):
+                j = 0
+                while j != self.size:
+                    positionInAlp = random.randint(0, math.pow(self.size, 2) - 1)
+                    if self.size == 5:
+                        if len(self.alphabet[positionInAlp]) == 1 and self.alphabet[positionInAlp] not in self.table[0] and \
+                        self.alphabet[positionInAlp] not in self.table[1] and self.alphabet[positionInAlp] not in self.table[2] and \
+                        self.alphabet[positionInAlp] not in self.table[3] and self.alphabet[positionInAlp] not in self.table[4]:
+                            self.table[i][j] = self.alphabet[positionInAlp]
+                            j += 1
+                    else:
+                        if len(self.alphabet[positionInAlp]) == 1 and self.alphabet[positionInAlp] not in self.table[0] and \
+                        self.alphabet[positionInAlp] not in self.table[1] and self.alphabet[positionInAlp] not in self.table[2] and \
+                        self.alphabet[positionInAlp] not in self.table[3] and self.alphabet[positionInAlp] not in self.table[4] and \
+                        self.alphabet[positionInAlp] not in self.table[5]:
+                            self.table[i][j] = self.alphabet[positionInAlp]
+                            j += 1
+        elif method == "user":
+            for i in range(self.size):
+                j = 0
+                while j != self.size:
+                    newLetterToTable = input("Write letter to add it to table: ")
+                    if self.size == 5:
+                        if newLetterToTable.upper() == self.NotInAplhabet:
+                            newLetterToTable = self.SubstituteLetter
+                        if len(newLetterToTable) == 1 and newLetterToTable.upper() not in self.table[0] and \
+                        newLetterToTable.upper() not in self.table[1] and newLetterToTable.upper() not in self.table[2] and \
+                        newLetterToTable.upper() not in self.table[3] and newLetterToTable.upper() not in self.table[4]:
+                            self.table[i][j] = newLetterToTable.upper()
+                            j += 1
+                            print("Added",newLetterToTable.upper())
+                        else:
+                            print("Wrong length of the letter or its already in the table")
+                    else:
+                        if len(newLetterToTable) == 1 and newLetterToTable.upper() not in self.table[0] and \
+                        newLetterToTable.upper() not in self.table[1] and newLetterToTable.upper() not in self.table[2] and \
+                        newLetterToTable.upper() not in self.table[3] and newLetterToTable.upper() not in self.table[4] and \
+                        newLetterToTable.upper() not in self.table[5]:
+                            self.table[i][j] = newLetterToTable.upper()
+                            j += 1
+                            print("Added",newLetterToTable.upper())
+                        else:
+                            print("Wrong length of the letter or its already in the table")
 
     def RepairInput(self, txtInput):
 
@@ -182,7 +209,7 @@ class Key:
 myCipher = Cipher(input("Enter type of cipher ADFGX or ADFGVX: "),"ENG", "Ahoj Pepo šejdeme se v 5 u mostů?")
 myKey = Key("klicik")
 myCipher.otherAttribs()
-myCipher.fillTable()
+myCipher.fillTable("generate")
 myKey.otherAttribs()
 
 def Encrypt():
@@ -367,5 +394,4 @@ def Decipher():
                         OT.append(str(j))
             badchars += 1
 
-    print(OT)
 Decipher()

@@ -1,16 +1,18 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QMenuBar
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QMenuBar, QRadioButton
 from PyQt5 import QtGui, uic
 import math
 import random
 
 class Cipher:
 
-    def __init__(self, name, language, message, repairedMessage = None, size = None, alphabet = None, table = None,
-    NotInAplhabet = None, SubstituteLetter = None, positios = None):
+    def __init__(self, name, language, typeOfFillingTable, encXdec, message = None, repairedMessage = None, size = None,
+    alphabet = None, table = None, NotInAplhabet = None, SubstituteLetter = None, positios = None, STresult = None,
+    remainingChars = None):
         self.name = name
         self.language = language
-        self.message = message
+        self.typeOfFillingTable = typeOfFillingTable
+        self.encXdec = encXdec
 
     def otherAttribs(self):
 
@@ -26,11 +28,11 @@ class Cipher:
             self.positios = {0 : 'A', 1 : 'D', 2 : 'F', 3 : 'G', 4 : 'X'}
             self.table = table = [['', '', '', '', ''], ['', '', '', '', ''], ['', '', '', '', ''], ['', '', '', '', ''], ['', '', '', '', '']]
             self.alphabet = list(map(chr, range(ord('a'), ord('z') + 1)))
-            self.repairedMessage = self.RepairInput(self.message)
 
             for i in range(len(self.alphabet)):
                 self.alphabet[i] = self.alphabet[i].upper()
 
+            self.remainingChars = self.alphabet
             self.alphabet.remove(self.NotInAplhabet)
         else:
             self.size = 6
@@ -38,13 +40,14 @@ class Cipher:
             self.table = [['', '', '', '', '', ''], ['', '', '', '', '', ''], ['', '', '', '', '', ''], ['', '', '', '', '', ''],
                 ['', '', '', '', '', ''], ['', '', '', '', '', '']]
             self.alphabet = list(map(chr, range(ord('a'), ord('z') + 1)))
-            self.repairedMessage = self.RepairInput(self.message)
 
             for i in range(len(self.alphabet)):
                 self.alphabet[i] = self.alphabet[i].upper()
 
             for i in range(10):
                 self.alphabet.append(str(i))
+
+            self.remainingChars = self.alphabet
 
     def fillTable(self):
         for i in range(self.size):
@@ -119,7 +122,7 @@ class Cipher:
 
 class Key:
 
-    def __init__(self, key, repairedKey = None, priorities = None):
+    def __init__(self, key = None, repairedKey = None, priorities = None):
         self.key = key
 
     def otherAttribs(self):
@@ -185,13 +188,22 @@ class Key:
 qtCreatorFile = "gui.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
-myCipher = Cipher("ADFGX","ENG", "Ahoj Pepo šejdeme se v 5 u mostů?")
-myKey = Key("klicik")
-#myCipher.otherAttribs()
-#myCipher.fillTable()
-#myKey.otherAttribs()
+myCipher = Cipher("ADFGX","ENG", "generate", "Encrypt")
+myKey = Key()
+myCipher.otherAttribs()
 
 class MyApp(QMainWindow, Ui_MainWindow):
+
+    def OnRadioButton(self):
+        radioBtn = self.sender()
+        if radioBtn.isChecked():
+            myCipher.encXdec = radioBtn.text()
+
+    def buttonFunction(self):
+        if myCipher.encXdec == "Decipher":
+            self.Decipher()
+        else:
+            self.Encrypt()
 
     def appType(self, typeName):
         if typeName == "ADFGVX":
@@ -213,105 +225,171 @@ class MyApp(QMainWindow, Ui_MainWindow):
             myCipher.otherAttribs()
             self.language_label.setText("Language: English")
 
-    def Encrypt(self):
+    def appFillingTable(self, typeOfFilling):
+        if typeOfFilling == "user":
+            myCipher.typeOfFillingTable = "user"
+            self.fillingTable_label.setText("Filling table: By user")
+        else:
+            myCipher.typeOfFillingTable = "generate"
+            self.fillingTable_label.setText("Filling table: Randomly generated")
 
+    def tableControl(self):
+        warnings = ""
         myCipher.otherAttribs()
-        myKey.otherAttribs()
-        myCipher.fillTable()
-        myKey.otherAttribs()
-        
-        OT = []
-        ST = []
-        beforeTransposition = []
-        afterTransposition = []
-        elements = 0
-        STcounter = 0
-        afterTransposition_OneList = []
-        badchars = 0
-        printingCounter = 1
-        printout = ""
-
-        for i in range(len(myCipher.repairedMessage)):
-            if myCipher.repairedMessage[i] == myCipher.NotInAplhabet and myCipher.size == 5:
-                OT.append(myCipher.SubstituteLetter)
-            else:
-                OT.append(myCipher.repairedMessage[i])
-
-        for i in range(len(OT)):
-            if len(OT[i]) == 1:
-                for j in range(len(myCipher.table)):
-                    for k in range(myCipher.size):
-                        if OT[i] == myCipher.table[j][k]:
-                            ST.append(myCipher.positios[j])
-                            ST.append(myCipher.positios[k])
-            else:
-                ST.append(OT[i])
-
-        for i in range(len(ST)):
-            if len(ST[i]) == 1:
-                elements += 1
-
-        rows = math.ceil(elements / len(myKey.repairedKey))
-        priority = 1
-
-        for i in range(rows):
-            beforeTransposition.append([])
-            afterTransposition.append([])
-        
-        for i in range(len(beforeTransposition)):
+        for i in range(myCipher.size):
             j = 0
-            while j != len(myKey.repairedKey):
-                try:
-                    if len(ST[STcounter]) == 1:
-                        beforeTransposition[i].append(ST[STcounter])
-                        STcounter += 1
-                        j += 1
+            while j != myCipher.size:
+                if self.tableWidget.item(i, j) != None:
+                    newLetterToTable = self.tableWidget.item(i, j).text().upper()
+                    if myCipher.size == 5:
+                        if newLetterToTable in myCipher.alphabet and newLetterToTable not in myCipher.table[0] and \
+                        newLetterToTable not in myCipher.table[1] and newLetterToTable not in myCipher.table[2] and \
+                        newLetterToTable not in myCipher.table[3] and newLetterToTable not in myCipher.table[4]:
+                            myCipher.table[i][j] = newLetterToTable
+                            myCipher.remainingChars.remove(newLetterToTable)
+                            j += 1
+                        else:
+                            warnings += ("Letter at row: " + str(i + 1) + " column: " + str(j + 1) +" is not allowed or its already in table")
+                            warnings += "\n"
+                            j += 1
                     else:
-                        STcounter += 1
-                except:
-                    beforeTransposition[i].append(None)
+                        if newLetterToTable in myCipher.alphabet and newLetterToTable not in myCipher.table[0] and \
+                        newLetterToTable not in myCipher.table[1] and newLetterToTable not in myCipher.table[2] and \
+                        newLetterToTable not in myCipher.table[3] and newLetterToTable not in myCipher.table[4] and \
+                        newLetterToTable not in myCipher.table[5]:
+                            myCipher.table[i][j] = newLetterToTable
+                            myCipher.remainingChars.remove(newLetterToTable)
+                            j += 1
+                        else:
+                            warnings += ("Letter at row: " + str(i + 1) + " column: " + str(j + 1) +"  is not allowed or its already in table")
+                            warnings += "\n"
+                            j += 1
+                else:
+                    warnings += "Empty field at row: " + str(i + 1) + " column: " + str(j + 1)
+                    warnings += "\n"
                     j += 1
 
-        for i in range(len(myKey.repairedKey)):
-            for j in range(len(myKey.repairedKey)):
-                if priority == myKey.priorities[j]:
-                    for k in range(len(beforeTransposition)):
-                        afterTransposition[k].append(beforeTransposition[k][j])
-            priority += 1
-
-        for i in range(len(myKey.repairedKey)):
-            for j in range(len(afterTransposition)):
-                if afterTransposition[j][i] != None:
-                    afterTransposition_OneList.append(afterTransposition[j][i])
-
-        for i in range(len(ST)):
-            if len(ST[i]) == 1:
-                ST[i] = afterTransposition_OneList[i - badchars]
+        stringOfRemainings = ""
+        for i in range(len(myCipher.remainingChars)):
+            if myCipher.remainingChars[i] != myCipher.remainingChars[-1]:
+                stringOfRemainings += myCipher.remainingChars[i] + ", "
             else:
-                badchars += 1
+                stringOfRemainings += myCipher.remainingChars[i]
 
-        for i in range(len(ST)):
-            if len(ST[i]) == 1:
-                if printingCounter % 5 == 0 and i != 0:
-                    printout += ST[i]
-                    printout += " "
-                    printingCounter += 1
-                else:
-                    printout += ST[i]
-                    printingCounter += 1
+        self.remaining.setText(stringOfRemainings)
+        self.warnings.setText(warnings)
 
-        if len(myCipher.message) == 0:
-            self.encryptResult.setText("Nothing to encrypt")
+    def Encrypt(self):
+
+        myCipher.message = self.messageInput.text()
+        myKey.key = self.keyInput.text()
+        myCipher.repairedMessage = myCipher.RepairInput(myCipher.message)
+        myCipher.otherAttribs()
+        myKey.otherAttribs()
+
+        if myCipher.typeOfFillingTable == "generate":
+            myCipher.fillTable()
+            self.warnings.clear()
+        elif myCipher.typeOfFillingTable == "user":
+            self.tableControl()
+        
+        if len(self.warnings.text()) > 1:
+            self.encResult.setText("Table is not filled correctly")
+        elif len(myKey.repairedKey) > (len(myCipher.repairedMessage) * 2):
+            self.encResult.setText("Key is long, your message should be at least "+ str(len(myCipher.repairedMessage) * 2) + " leters long")
         else:
-            self.encryptResult.setText(printout)
-        return(ST)
+            OT = []
+            ST = []
+            beforeTransposition = []
+            afterTransposition = []
+            elements = 0
+            STcounter = 0
+            afterTransposition_OneList = []
+            badchars = 0
+            printingCounter = 1
+            printout = ""
 
-    def CopyEncryptResult(self):
-        self.decipherInput.setText(self.encryptResult.text())
+            for i in range(len(myCipher.repairedMessage)):
+                if myCipher.repairedMessage[i] == myCipher.NotInAplhabet and myCipher.size == 5:
+                    OT.append(myCipher.SubstituteLetter)
+                else:
+                    OT.append(myCipher.repairedMessage[i])
+
+            for i in range(len(OT)):
+                if len(OT[i]) == 1:
+                    for j in range(len(myCipher.table)):
+                        for k in range(myCipher.size):
+                            if OT[i] == myCipher.table[j][k]:
+                                ST.append(myCipher.positios[j])
+                                ST.append(myCipher.positios[k])
+                else:
+                    ST.append(OT[i])
+
+            for i in range(len(ST)):
+                if len(ST[i]) == 1:
+                    elements += 1
+
+            rows = math.ceil(elements / len(myKey.repairedKey))
+            priority = 1
+
+            for i in range(rows):
+                beforeTransposition.append([])
+                afterTransposition.append([])
+            
+            for i in range(len(beforeTransposition)):
+                j = 0
+                while j != len(myKey.repairedKey):
+                    try:
+                        if len(ST[STcounter]) == 1:
+                            beforeTransposition[i].append(ST[STcounter])
+                            STcounter += 1
+                            j += 1
+                        else:
+                            STcounter += 1
+                    except:
+                        beforeTransposition[i].append(None)
+                        j += 1
+
+            for i in range(len(myKey.repairedKey)):
+                for j in range(len(myKey.repairedKey)):
+                    if priority == myKey.priorities[j]:
+                        for k in range(len(beforeTransposition)):
+                            afterTransposition[k].append(beforeTransposition[k][j])
+                priority += 1
+
+            for i in range(len(myKey.repairedKey)):
+                for j in range(len(afterTransposition)):
+                    if afterTransposition[j][i] != None:
+                        afterTransposition_OneList.append(afterTransposition[j][i])
+
+            for i in range(len(ST)):
+                if len(ST[i]) == 1:
+                    ST[i] = afterTransposition_OneList[i - badchars]
+                else:
+                    badchars += 1
+
+            c = 1
+            for i in range(len(myKey.repairedKey)):
+                for j in range(len(afterTransposition)):
+                    if c % 70 == 0:
+                        printout += "\n"
+
+                    if afterTransposition[j][i] != None:
+                        printout += afterTransposition[j][i]
+                        c += 1
+                printout += " "
+
+            if len(myCipher.message) == 0:
+                self.encResult.setText("Nothing to encrypt")
+            else:
+                self.encResult.setText(printout)
+
+            myCipher.STresult = ST
+            return(myCipher.STresult)
 
     def Decipher(self):
 
-        ST = self.Encrypt()
+        ST = myCipher.STresult
         OT = []
         afterTransposition = []
         beforeTransposition = []
@@ -343,11 +421,11 @@ class MyApp(QMainWindow, Ui_MainWindow):
             j = 0
             while j != rows:
                 if len(ST[STcounter]) == 1:
-                    if j != 8:
+                    if j != (int(rows) - 1):
                         afterTransposition[j].append(ST[STcounter])
                         STcounter += 1
                         j += 1
-                    elif j == 8 and (i + 1) not in myKey.priorities:
+                    elif j == (int(rows) - 1) and (i + 1) not in myKey.priorities:
                         afterTransposition[j].append(None)
                         j += 1
                     else:
@@ -413,9 +491,9 @@ class MyApp(QMainWindow, Ui_MainWindow):
             c += 1
 
         if len(ST) == 0:
-            self.decipherResult.setText("Nothing to decipher")
+            self.decResult.setText("Nothing to decipher")
         else:
-            self.decipherResult.setText(OT_string)
+            self.decResult.setText(OT_string)
         return(OT)
 
 
@@ -423,13 +501,16 @@ class MyApp(QMainWindow, Ui_MainWindow):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        self.rb_encrypt.setChecked(True)
+        self.rb_encrypt.toggled.connect(self.OnRadioButton)
+        self.rb_decipher.toggled.connect(self.OnRadioButton)
         self.ADFGX.triggered.connect(lambda: self.appType("ADFGX"))
         self.ADFGVX.triggered.connect(lambda: self.appType("ADFGVX"))
         self.ENG.triggered.connect(lambda: self.appLanguage("english"))
         self.CZE.triggered.connect(lambda: self.appLanguage("czech"))
-        self.encrypt_btn.clicked.connect(self.Encrypt)
-        self.copy_btn.clicked.connect(self.CopyEncryptResult)
-        self.decipher_btn.clicked.connect(self.Decipher)
+        self.generate.triggered.connect(lambda: self.appFillingTable("generate"))
+        self.user.triggered.connect(lambda: self.appFillingTable("user"))
+        self.enc_dec_btn.clicked.connect(self.buttonFunction)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
