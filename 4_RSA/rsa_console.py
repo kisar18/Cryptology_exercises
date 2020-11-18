@@ -42,9 +42,6 @@ d = Crypto.Util.number.inverse(e, phiN)
 
 print("Value of d ", d, len(str(d)))
 
-print("PowerMod: ")
-session.evaluate(wlexpr('Range[5]'))
-
 def Encrypt():
     text = "Ahoj pepo jak se máš?"
 
@@ -73,4 +70,11 @@ def Encrypt():
             OT[i].remove(OT[i][-1])
         OT[i][0] = int(OT[i][j], 2)
 
-#Encrypt()
+    for i in range(len(OT)):
+        ST.append(session.evaluate(wl.PowerMod(OT[i][0], e, n)))
+    session.terminate()
+
+    print("OT: ",OT)
+    print("ST: ",ST)
+    return(ST)
+Encrypt()
