@@ -92,8 +92,44 @@ class MyApp(QMainWindow, Ui_MainWindow):
 
         return OT
 
-    def NumbersToText(self):
-        pass
+    def NumbersToText(self, OT, ST):
+
+        OT_binary = []
+        OT_binary_decomposed = []
+        OT_int_decomposed = []
+
+        for i in range(len(ST)):
+            OT.append(session.evaluate(wl.PowerMod(ST[i], myCipher.d, myCipher.n)))
+            OT_binary.append('{0:060b}'.format(OT[i]))
+        session.terminate()
+    
+        newListCounter = 0
+        number12bit = ""
+        for i in range(len(OT_binary)):
+            OT_binary_decomposed.append([])
+            newListCounter = 0
+            for j in range(len(OT_binary[i])):
+                if newListCounter % 12 == 0 and newListCounter != 0:
+                    OT_binary_decomposed[i].append(number12bit)
+                    number12bit = ""
+                    number12bit += OT_binary[i][j]
+                    newListCounter += 1
+                elif newListCounter == 0:
+                    number12bit += OT_binary[i][j]
+                    newListCounter += 1
+                else:
+                    number12bit += OT_binary[i][j]
+                    newListCounter += 1
+                    if newListCounter == len(OT_binary[i]):
+                        OT_binary_decomposed[i].append(number12bit)
+                        number12bit = ""
+
+        OT_int_decomposed = OT_binary_decomposed
+        for i in range(len(OT_binary_decomposed)):
+            for j in range(len(OT_binary_decomposed[i])):
+                OT_int_decomposed[i][j] = chr(int(OT_binary_decomposed[i][j], 2))         
+
+        return OT_int_decomposed
 
     def Encrypt(self):
 
@@ -103,6 +139,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.encResult.setText("Nothing to encrypt")
             myCipher.ST_result == ""
         else:
+            self.keyE.setText(str(myCipher.e))
             OT = self.TextToNumbers()
             ST = []
 
@@ -110,10 +147,14 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 ST.append(session.evaluate(wl.PowerMod(OT[i][0], myCipher.e, myCipher.n)))
             session.terminate()
 
+            printedNumbers = 0
             for i in range(len(ST)):
                 myCipher.ST_result += str(ST[i])
+                printedNumbers += 1
                 if i != len(ST):
                     myCipher.ST_result += " "
+                if printedNumbers % 3 == 0 and printedNumbers != 0:
+                    myCipher.ST_result += "\n"
             
             self.encResult.setText(myCipher.ST_result)
             return myCipher.ST_result
@@ -124,10 +165,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
         if myCipher.ST_result == "":
             self.decResult.setText("Nothing to decipher")
         else:
-            ST = []
-            OT = []
-            OT_binary = []
-            OT_binary_decomposed = []
+            self.keyD.setText(str(myCipher.d))
+            ST_int = []
+            OT_int = []
+            OT_letters = []
             number = ""
             c = 0
 
@@ -135,43 +176,17 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 if myCipher.ST_result[i] != " ":
                     number += myCipher.ST_result[i]
                 else:
-                    ST.append(int(number))
+                    ST_int.append(int(number))
                     number = ""
 
-            for i in range(len(ST)):
-                OT.append(session.evaluate(wl.PowerMod(ST[i], myCipher.d, myCipher.n)))
-                OT_binary.append('{0:060b}'.format(OT[i]))
-            session.terminate()
+            OT_letters = self.NumbersToText(OT_int,ST_int)
 
-            newListCounter = 0
-            number12bit = ""
-            for i in range(len(OT_binary)):
-                OT_binary_decomposed.append([])
-                newListCounter = 0
-                for j in range(len(OT_binary[i])):
-                    if newListCounter % 12 == 0 and newListCounter != 0:
-                        OT_binary_decomposed[i].append(number12bit)
-                        number12bit = ""
-                        number12bit += OT_binary[i][j]
-                        newListCounter += 1
-                    elif newListCounter == 0:
-                        number12bit += OT_binary[i][j]
-                        newListCounter += 1
-                    else:
-                        number12bit += OT_binary[i][j]
-                        newListCounter += 1
-                        if newListCounter == len(OT_binary[i]):
-                            OT_binary_decomposed[i].append(number12bit)
-                            number12bit = ""
-
-            for i in range(len(OT_binary_decomposed)):
-                for j in range(len(OT_binary_decomposed[i])):
-                    OT_binary_decomposed[i][j] = chr(int(OT_binary_decomposed[i][j], 2))
-                    myCipher.OT_result += OT_binary_decomposed[i][j]
+            for i in range(len(OT_letters)):
+                for j in range(len(OT_letters[i])):
+                    myCipher.OT_result += OT_letters[i][j]
 
             self.decResult.setText(myCipher.OT_result)
             return(myCipher.OT_result)
-
 
     def __init__(self):
         QMainWindow.__init__(self)
