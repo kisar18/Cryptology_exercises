@@ -1,4 +1,5 @@
 import Crypto.Util.number
+from Crypto.Util.number import isPrime
 import random
 import math
 import sys
@@ -10,7 +11,11 @@ from wolframclient.evaluation import WolframLanguageSession
 session=WolframLanguageSession()
 from wolframclient.language import wl
 
-#commands "pip install pycryptodome" and "pip install wolframclient" are needed
+# !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!!
+# You need to use commands below in your terminal (command line) to run this application
+# pip install pycryptodome
+# pip install wolframclient
+# !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!!
 
 class Cipher:
 
@@ -92,16 +97,10 @@ class MyApp(QMainWindow, Ui_MainWindow):
 
         return OT
 
-    def NumbersToText(self, OT, ST):
+    def NumbersToText(self, OT_binary):
 
-        OT_binary = []
         OT_binary_decomposed = []
         OT_int_decomposed = []
-
-        for i in range(len(ST)):
-            OT.append(session.evaluate(wl.PowerMod(ST[i], myCipher.d, myCipher.n)))
-            OT_binary.append('{0:060b}'.format(OT[i]))
-        session.terminate()
     
         newListCounter = 0
         number12bit = ""
@@ -134,15 +133,26 @@ class MyApp(QMainWindow, Ui_MainWindow):
     def Encrypt(self):
 
         myCipher.message = self.messageInput.text()
+        myCipher.ST_result = ""
         
         if len(myCipher.message) == 0:
             self.encResult.setText("Nothing to encrypt")
             myCipher.ST_result == ""
         else:
-            self.keyE.setText(str(myCipher.e))
             OT = self.TextToNumbers()
             ST = []
+            if len(self.keyE_n.text()) != 0 and len(self.keyE_n.text()) != 0:
+                if len(self.keyE_n.text()) != 13 or isPrime(int(self.keyE_n.text())) == False:
+                    self.encResult.setText("Part n has not a correct length (13) or is not a prime")
+                    return
+                elif len(self.keyE_e.text()) != 13 or isPrime(int(self.keyE_e.text())) == False:
+                    self.encResult.setText("Part e has not a correct length (13) or is not a prime")
+                    return
+                else:
+                    myCipher.n = int(self.keyE_n.text())
+                    myCipher.e = int(self.keyE_e.text())
 
+            self.keyE.setText(str(myCipher.e))
             for i in range(len(OT)):
                 ST.append(session.evaluate(wl.PowerMod(OT[i][0], myCipher.e, myCipher.n)))
             session.terminate()
@@ -159,27 +169,57 @@ class MyApp(QMainWindow, Ui_MainWindow):
             self.encResult.setText(myCipher.ST_result)
             return myCipher.ST_result
 
+    def CopyEncryptResult(self):
+        self.messageInput.setText(self.encResult.text())
 
     def Decipher(self):
 
-        if myCipher.ST_result == "":
+        myCipher.OT_result = ""
+
+        if len(self.messageInput.text()) < 1:
             self.decResult.setText("Nothing to decipher")
         else:
-            self.keyD.setText(str(myCipher.d))
+            decMessage = list(self.messageInput.text())
             ST_int = []
             OT_int = []
+            OT_binary = []
             OT_letters = []
             number = ""
             c = 0
 
-            for i in range(len(myCipher.ST_result)):
-                if myCipher.ST_result[i] != " ":
-                    number += myCipher.ST_result[i]
+            for i in range(len(decMessage)):
+                if decMessage[i] != " ":
+                    try:
+                        int(decMessage[i])
+                    except:
+                        self.decResult.setText("Cant decipher text, all characters must be numbers")
+                        return
+
+            for i in range(len(decMessage)):
+                if decMessage[i] != " ":
+                    number += decMessage[i]
                 else:
                     ST_int.append(int(number))
                     number = ""
 
-            OT_letters = self.NumbersToText(OT_int,ST_int)
+            if len(self.keyD_n.text()) != 0 and len(self.keyD_d.text()) != 0:
+                if len(self.keyD_n.text()) != 13 or isPrime(int(self.keyD_n.text())) == False:
+                    self.decResult.setText("Part n has not a correct length (13) or is not a prime")
+                    return
+                elif len(self.keyD_d.text()) != 13 or isPrime(int(self.keyD_d.text())) == False:
+                    self.decResult.setText("Part d has not a correct length (13) or is not a prime")
+                    return
+                else:
+                    myCipher.n = int(self.keyD_n.text())
+                    myCipher.d = int(self.keyD_d.text())
+
+            self.keyD.setText(str(myCipher.d))
+            for i in range(len(ST_int)):
+                OT_int.append(session.evaluate(wl.PowerMod(ST_int[i], myCipher.d, myCipher.n)))
+                OT_binary.append('{0:060b}'.format(OT_int[i]))
+            session.terminate()
+
+            OT_letters = self.NumbersToText(OT_binary)
 
             for i in range(len(OT_letters)):
                 for j in range(len(OT_letters[i])):
@@ -196,6 +236,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
         self.r_enc.toggled.connect(self.OnRadioButton)
         self.r_dec.toggled.connect(self.OnRadioButton)
         self.enc_dec_btn.clicked.connect(self.buttonFunction)
+        self.btn_copy.clicked.connect(self.CopyEncryptResult)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

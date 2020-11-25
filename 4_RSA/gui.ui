@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>750</height>
+    <height>865</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,20 +39,20 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>250</x>
       <y>80</y>
-      <width>141</width>
-      <height>16</height>
+      <width>161</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Text for encryption:</string>
+     <string>Text for encryption / decryption:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="messageInput">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>420</x>
       <y>80</y>
       <width>113</width>
       <height>20</height>
@@ -63,7 +63,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>330</y>
+      <y>430</y>
       <width>141</width>
       <height>16</height>
      </rect>
@@ -76,7 +76,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>330</y>
+      <y>430</y>
       <width>461</width>
       <height>81</height>
      </rect>
@@ -92,7 +92,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>510</y>
+      <y>650</y>
       <width>461</width>
       <height>81</height>
      </rect>
@@ -108,7 +108,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>510</y>
+      <y>650</y>
       <width>141</width>
       <height>16</height>
      </rect>
@@ -121,7 +121,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>130</y>
+      <y>240</y>
       <width>82</width>
       <height>17</height>
      </rect>
@@ -134,7 +134,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>170</y>
+      <y>280</y>
       <width>82</width>
       <height>17</height>
      </rect>
@@ -147,7 +147,7 @@
     <property name="geometry">
      <rect>
       <x>290</x>
-      <y>210</y>
+      <y>310</y>
       <width>131</width>
       <height>23</height>
      </rect>
@@ -160,7 +160,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>270</y>
+      <y>370</y>
       <width>121</width>
       <height>16</height>
      </rect>
@@ -173,7 +173,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>270</y>
+      <y>370</y>
       <width>341</width>
       <height>20</height>
      </rect>
@@ -189,7 +189,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>460</y>
+      <y>600</y>
       <width>341</width>
       <height>20</height>
      </rect>
@@ -205,13 +205,160 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>460</y>
+      <y>600</y>
       <width>121</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
      <string>Key &quot;d&quot; for decryption:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>110</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Key e:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>110</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Key d:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>140</y>
+      <width>47</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>n:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>140</y>
+      <width>47</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>n:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="keyE_n">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>140</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="keyD_n">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>140</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>180</y>
+      <width>31</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>e:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="keyE_e">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>180</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>180</y>
+      <width>31</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>d:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="keyD_d">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>180</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_copy">
+    <property name="geometry">
+     <rect>
+      <x>304</x>
+      <y>550</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Copy encrypt result</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>210</y>
+      <width>431</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>If you dont fill keys fields, they will be generated automatically (recommended)</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
