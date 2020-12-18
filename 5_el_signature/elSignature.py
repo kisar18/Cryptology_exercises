@@ -6,6 +6,7 @@ import sys
 import hashlib
 import zipfile
 from os.path import basename
+import base64
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog
 from PyQt5 import QtGui, uic
@@ -15,6 +16,12 @@ from wolframclient.evaluation import WolframLanguageSession
 session=WolframLanguageSession()
 from wolframclient.language import wl
 
+# !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!!
+# You need to use commands below in your terminal (command line) to run this application
+# pip install pycryptodome
+# pip install wolframclient
+# !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!!
+
 class Cipher:
 
     def __init__(self, name, message = None, p = None, q = None, n = None, phiN = None, e = None, d = None,
@@ -23,7 +30,6 @@ class Cipher:
         self.name = name
         self.e = 0
         self.d = 0
-        #self.encXdec = encXdec
 
     def generateKeys(self):
         self.bitsOptions = [40, 41, 42, 43, 44]
@@ -51,13 +57,23 @@ class Cipher:
         self.OT_result = ""
 
 myCipher = Cipher("myRSA")
-#myCipher.generateKeys()
-#myCipher.otherAttribs()
 
 qtCreatorFile = "gui.ui"
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
 class MyApp(QMainWindow, Ui_MainWindow):
+
+    def encodeToBase64(self, text):
+        base64Text = text.encode("ascii")
+        base64Bytes = base64.b64encode(base64Text)
+        noBytesText = base64Bytes.decode("ascii")
+        return noBytesText
+
+    def decodeFromBase64(self, text):
+        base64BytesText = text.encode("ascii")
+        textBytes = base64.b64decode(base64BytesText)
+        decodedBase64 = textBytes.decode("ascii")
+        return decodedBase64
 
     def GetFile(self, typeOfFile, suff):
         options = QFileDialog.Options()
@@ -84,14 +100,22 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 myCipher.privPath = fileName
                 with open(fileName, "r") as f:
                     f.seek(4)
-                    myCipher.d = int(f.readline(), 10)
-                    myCipher.n = int(f.readline(), 10)
+                    base64Text = f.readline()
+                    decodedBase64D = self.decodeFromBase64(base64Text)
+                    myCipher.d = int(decodedBase64D, 10)
+                    base64Text2 = f.readline()
+                    decodedBase64N = self.decodeFromBase64(base64Text2)
+                    myCipher.n = int(decodedBase64N, 10)
             elif typeOfFile == "Public key":
                 myCipher.pubPath = fileName
                 with open(fileName, "r") as f:
                     f.seek(4)
-                    myCipher.e = int(f.readline(), 10)
-                    myCipher.n = int(f.readline(), 10)
+                    base64Text = f.readline()
+                    decodedBase64E = self.decodeFromBase64(base64Text)
+                    myCipher.e = int(decodedBase64E, 10)
+                    base64Text2 = f.readline()
+                    decodedBase64N = self.decodeFromBase64(base64Text2)
+                    myCipher.n = int(decodedBase64N, 10)
             elif typeOfFile == "Zip":
                 myCipher.zipPath = fileName
                 with zipfile.ZipFile(fileName, "r") as z:
@@ -100,7 +124,9 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 myCipher.fileToBeVerified = fileName
                 with open(fileName, "r") as f:
                     f.seek(13)
-                    myCipher.toVerifyMessage = list(f.readline())
+                    base64Text = f.readline()
+                    decodedBase64 = self.decodeFromBase64(base64Text)
+                    myCipher.toVerifyMessage = list(decodedBase64)
 
     def SaveFile(self, text, typeOfFile, suff):
         options = QFileDialog.Options()
@@ -115,15 +141,20 @@ class MyApp(QMainWindow, Ui_MainWindow):
             elif typeOfFile == "Sign":
                 myCipher.signFilePath = fileName
                 with open(fileName, "w") as f:
-                    f.write("RSA_SHA3-512 " + str(text))
+                    textInBase64 = self.encodeToBase64(text)
+                    f.write("RSA_SHA3-512 " + str(textInBase64))
             elif typeOfFile == "Private key":
                 myCipher.privPath = fileName
                 with open(fileName, "w") as f:
-                    f.writelines(["RSA " + str(text), "\n" + str(myCipher.n)])
+                    dInBase64 = self.encodeToBase64(str(text))
+                    nInbase64 = self.encodeToBase64(str(myCipher.n))
+                    f.writelines(["RSA " + dInBase64, "\n" + nInbase64])
             elif typeOfFile == "Public key":
                 myCipher.pubPath = fileName
                 with open(fileName, "w") as f:
-                    f.writelines(["RSA " + str(text), "\n" + str(myCipher.n)])
+                    eInBase64 = self.encodeToBase64(str(text))
+                    nInbase64 = self.encodeToBase64(str(myCipher.n))
+                    f.writelines(["RSA " + eInBase64, "\n" + nInbase64])
             else:
                 with open(fileName, "w") as f:
                     f.write(str(text))
@@ -138,6 +169,7 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 file_hash.update(fb)
                 fb = f.read(BLOCK_SIZE)
         myCipher.message = file_hash.hexdigest()
+        self.signResult.setText("Hash is complete")
 
         return file_hash.hexdigest()
 
@@ -223,7 +255,6 @@ class MyApp(QMainWindow, Ui_MainWindow):
     def Encrypt(self):
 
         myCipher.ST_result = ""
-        #if userHasKeys == False:
 
         OT = self.TextToNumbers()
         ST = []
@@ -261,8 +292,12 @@ class MyApp(QMainWindow, Ui_MainWindow):
                 if myCipher.toVerifyMessage[i] != " ":
                     number += myCipher.toVerifyMessage[i]
                 else:
-                    ST_int.append(int(number))
-                    number = ""
+                    try:
+                        ST_int.append(int(number))
+                        number = ""
+                    except:
+                        self.verResult.setText("File was damaged")
+                        return
 
             for i in range(len(ST_int)):
                 OT_int.append(session.evaluate(wl.PowerMod(ST_int[i], myCipher.e, myCipher.n)))
